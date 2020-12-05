@@ -152,5 +152,7 @@
             </Label>
          </children>
       </Pane>
+      <Hyperlink fx:id="setPropic" layoutX="321.0" layoutY="64.0" onAction="#setPropic" text="Cambiar foto" />
+      <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="200.0" layoutX="560.0" layoutY="362.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </Pane>

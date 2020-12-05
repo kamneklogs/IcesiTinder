@@ -1,6 +1,12 @@
 package ui;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,7 +14,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.MasterClass;
 import model.User;
@@ -36,7 +45,6 @@ public class ProfileViewController {
 
 	@FXML
 	private Label sexOrL;
-
 
 	@FXML
 	private Label nameLogged;
@@ -132,16 +140,14 @@ public class ProfileViewController {
 
 			}
 		} else {
-			if(!currentUserToShow.getUserName().equals(mc.getCurrentUser().getUserName())) {
+			if (!currentUserToShow.getUserName().equals(mc.getCurrentUser().getUserName())) {
 				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/miniPaneToDoMatch.fxml"));
 				fxmlLoader.setController(new MiniController(paneToDoMatch, MainPane, mc, primaryStage, t.hashCode()));
 				Parent doMatch = fxmlLoader.load();
 				paneToDoMatch.getChildren().clear();
 				paneToDoMatch.getChildren().add(doMatch);
-				
-				
+
 			}
-			
 
 		}
 
@@ -167,4 +173,36 @@ public class ProfileViewController {
 		MainPane.getChildren().add(mainView);
 
 	}
+
+	@FXML
+	void setPropic(ActionEvent event) throws IOException {
+
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open Resource File");
+
+		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JPG", "*.jpg"));
+
+		Path origin = FileSystems.getDefault()
+				.getPath(fileChooser.showOpenDialog(mainController.primaryStage).getAbsolutePath());
+
+		File theNewImage = new File("data/" + mc.getCurrentUser().getUserName() + ".jpg");
+
+		Path destinationOPath = FileSystems.getDefault().getPath(theNewImage.getAbsolutePath());
+
+		try {
+			Files.move(origin, destinationOPath, StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Image newPic = new Image(new FileInputStream("data/" + mc.getCurrentUser().getUserName() + ".jpg"));
+
+		profileImage.setImage(newPic);
+	}
+
+	@FXML
+	private ImageView profileImage;
+
+
+
 }
