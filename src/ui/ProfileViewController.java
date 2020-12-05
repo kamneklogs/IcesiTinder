@@ -12,9 +12,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -237,13 +239,22 @@ public class ProfileViewController {
 
 			try {
 				Files.copy(origin, destinationOPath, StandardCopyOption.REPLACE_EXISTING);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			Image newPic = new Image(new FileInputStream("data/" + mc.getCurrentUser().getUserName() + ".jpg"));
 
-			profileImage.setImage(newPic);
-			miniPicProfile.setImage(newPic);
+				Image newPic = new Image(new FileInputStream("data/" + mc.getCurrentUser().getUserName() + ".jpg"));
+
+				profileImage.setImage(newPic);
+				miniPicProfile.setImage(newPic);
+			} catch (Exception e) {
+
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Acceso denegado");
+				alert.setHeaderText(null);
+				alert.setContentText("Occurió algo, tu sistema operativo denegó\nel acceso a el archivo!");
+
+				alert.showAndWait();
+
+			}
+
 		}
 
 	}
