@@ -269,7 +269,7 @@ public class MainAppController {
 
 			miniPicProfile.setImage(newPic);
 		} else {
-			Image newPic = new Image(new FileInputStream("data/default.jpg"));
+			Image newPic = new Image(new FileInputStream("src/view/usuario.png"));
 
 			miniPicProfile.setImage(newPic);
 		}

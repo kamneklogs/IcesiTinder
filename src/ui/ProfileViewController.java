@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.MasterClass;
@@ -91,16 +92,6 @@ public class ProfileViewController {
 
 		User t = currentUserToShow;
 
-		if (new File("data/" + mc.getCurrentUser().getUserName() + ".jpg").exists()) {
-			Image newPic = new Image(new FileInputStream("data/" + mc.getCurrentUser().getUserName() + ".jpg"));
-
-			profileImage.setImage(newPic);
-		} else {
-			Image newPic = new Image(new FileInputStream("data/default.jpg"));
-
-			profileImage.setImage(newPic);
-		}
-
 		if (currentUserToShow.getUserName().equals(mc.getCurrentUser().getUserName()) == true) {
 			editButton.setDisable(false);
 			editButton.setVisible(true);
@@ -108,6 +99,19 @@ public class ProfileViewController {
 			paneToDoMatch.setVisible(false);
 			setPropic.setDisable(false);
 			setPropic.setVisible(true);
+
+			profileImage.setDisable(false);
+			profileImage.setVisible(true);
+
+			if (new File("data/" + mc.getCurrentUser().getUserName() + ".jpg").exists()) {
+				Image newPic = new Image(new FileInputStream("data/" + mc.getCurrentUser().getUserName() + ".jpg"));
+
+				profileImage.setImage(newPic);
+			} else {
+				Image newPic = new Image(new FileInputStream("data/default.jpg"));
+
+				profileImage.setImage(newPic);
+			}
 		} else {
 			editButton.setDisable(true);
 			editButton.setVisible(false);
@@ -115,6 +119,9 @@ public class ProfileViewController {
 			setPropic.setVisible(false);
 
 			tittleViewPerfil.setText("Busqueda de usuario");
+
+			profileImage.setDisable(true);
+			profileImage.setVisible(false);
 		}
 
 		nameLogged.setText(mc.getCurrentUser().getName());
@@ -170,6 +177,23 @@ public class ProfileViewController {
 
 		}
 
+		Circle circle = new Circle();
+		circle.setCenterX(miniPicProfile.getFitWidth() / 2);
+		circle.setCenterY(miniPicProfile.getFitHeight() / 2);
+		circle.setRadius(19.0f);
+
+		miniPicProfile.setClip(circle);
+
+		if (new File("data/" + mc.getCurrentUser().getUserName() + ".jpg").exists()) {
+			Image newPic = new Image(new FileInputStream("data/" + mc.getCurrentUser().getUserName() + ".jpg"));
+
+			miniPicProfile.setImage(newPic);
+		} else {
+			Image newPic = new Image(new FileInputStream("src/view/usuario.png"));
+
+			miniPicProfile.setImage(newPic);
+		}
+
 	}
 
 	@FXML
@@ -203,25 +227,31 @@ public class ProfileViewController {
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("All Images", "*.*"),
 				new FileChooser.ExtensionFilter("JPG", "*.jpg"));
 
-		Path origin = FileSystems.getDefault()
-				.getPath(fileChooser.showOpenDialog(mainController.primaryStage).getAbsolutePath());
+		File temp = fileChooser.showOpenDialog(mainController.primaryStage);
 
-		File theNewImage = new File("data/" + mc.getCurrentUser().getUserName() + ".jpg");
+		if (temp != null) {
+			Path origin = FileSystems.getDefault().getPath(temp.getAbsolutePath());
+			File theNewImage = new File("data/" + mc.getCurrentUser().getUserName() + ".jpg");
 
-		Path destinationOPath = FileSystems.getDefault().getPath(theNewImage.getAbsolutePath());
+			Path destinationOPath = FileSystems.getDefault().getPath(theNewImage.getAbsolutePath());
 
-		try {
-			Files.copy(origin, destinationOPath, StandardCopyOption.REPLACE_EXISTING);
-		} catch (Exception e) {
-			e.printStackTrace();
+			try {
+				Files.copy(origin, destinationOPath, StandardCopyOption.REPLACE_EXISTING);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			Image newPic = new Image(new FileInputStream("data/" + mc.getCurrentUser().getUserName() + ".jpg"));
+
+			profileImage.setImage(newPic);
+			miniPicProfile.setImage(newPic);
 		}
-		Image newPic = new Image(new FileInputStream("data/" + mc.getCurrentUser().getUserName() + ".jpg"));
 
-		profileImage.setImage(newPic);
-		
 	}
 
 	@FXML
 	private ImageView profileImage;
+
+	@FXML
+	private ImageView miniPicProfile;
 
 }
